@@ -6,10 +6,10 @@ from astrbot.core.platform.sources.aiocqhttp.aiocqhttp_message_event import Aioc
 
 @register(
     "astrbot_plugin_auto_approve_all_plus",
-    "CarefrreeSongs712",
+    "Nahida364,CarefreeSongs712",
     "自动同意所有群邀请和好友申请",
     "1.0.0",
-    "https://github.com/CarefrreeSongs712/astrbot_plugin_auto_approve_all_plus",
+    "https://github.com/CarefreeSongs712/astrbot_plugin_auto_approve_all_plus",
 )
 class AutoApproveAll(Star):
     
