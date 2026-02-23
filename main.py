@@ -18,11 +18,13 @@ class AutoApproveAll(Star):
         super().__init__(context)
         
     @filter.command("同意好友申请")
+    @filter.permission_type(filter.PermissionType.ADMIN)
     async def approve_friend(self, event: AstrMessageEvent):
         self.config.approve_friend = not self.config.approve_friend
         yield event.plain_result(f"自动同意好友申请已设置为 {self.config.approve_friend}!") 
 
     @filter.command("同意群聊申请")
+    @filter.permission_type(filter.PermissionType.ADMIN)
     async def approve_group(self, event: AstrMessageEvent):
         self.config.approve_group = not self.config.approve_group
         yield event.plain_result(f"自动同意群聊申请已设置为 {self.config.approve_group}!") 
