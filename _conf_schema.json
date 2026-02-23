@@ -1,0 +1,14 @@
+{
+  "approve_friend": {
+    "description": "自动通过好友申请",
+    "type": "bool",
+    "hint": "是否自动通过好友申请",
+    "default": true
+  },
+  "approve_group": {
+    "description": "自动通过群聊申请",
+    "type": "bool",
+    "hint": "是否自动通过群聊申请",
+    "default": false
+  }
+}

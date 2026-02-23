@@ -1,19 +1,31 @@
 import asyncio
 from astrbot.api.event import filter, AstrMessageEvent
 from astrbot.api.star import Context, Star, register
-from astrbot.api import logger
+from astrbot.api import logger, AstrBotConfig
 from astrbot.core.platform.sources.aiocqhttp.aiocqhttp_message_event import AiocqhttpMessageEvent
 
 @register(
-    "astrbot_plugin_auto_approve_all",
-    "Nahida",
+    "astrbot_plugin_auto_approve_all_plus",
+    "CarefrreeSongs712",
     "自动同意所有群邀请和好友申请",
     "1.0.0",
-    "https://github.com/Nahida364/astrbot_plugin_auto_approve_all",
+    "https://github.com/CarefrreeSongs712/astrbot_plugin_auto_approve_all_plus",
 )
 class AutoApproveAll(Star):
-    def __init__(self, context: Context):
+    
+    def __init__(self, context: Context, config: AstrBotConfig):
+        self.config = config
         super().__init__(context)
+        
+    @filter.command("同意好友申请")
+    async def approve_friend(self, event: AstrMessageEvent):
+        self.config.approve_friend = not self.config.approve_friend
+        yield event.plain_result(f"自动同意好友申请已设置为 {self.config.approve_friend}!") 
+
+    @filter.command("同意群聊申请")
+    async def approve_group(self, event: AstrMessageEvent):
+        self.config.approve_group = not self.config.approve_group
+        yield event.plain_result(f"自动同意群聊申请已设置为 {self.config.approve_group}!") 
 
     @filter.platform_adapter_type(filter.PlatformAdapterType.AIOCQHTTP)
     async def event_monitoring(self, event: AstrMessageEvent):
@@ -32,7 +44,7 @@ class AutoApproveAll(Star):
         flag = raw_message.get("flag")
         user_id = raw_message.get("user_id")
         
-        if raw_message.get("request_type") == "friend":
+        if raw_message.get("request_type") == "friend" and self.config.approve_friend:
             try:
                 await client.set_friend_add_request(flag=flag, approve=True)
                 logger.info(f"已自动同意好友申请 from {user_id}")
@@ -50,7 +62,8 @@ class AutoApproveAll(Star):
                 logger.error(f"同意好友申请失败: {e}")
 
         elif (raw_message.get("request_type") == "group" and 
-              raw_message.get("sub_type") == "invite"):
+              raw_message.get("sub_type") == "invite" and 
+              self.config.approve_group):
             try:
                 group_id = raw_message.get("group_id")
                 await client.set_group_add_request(
